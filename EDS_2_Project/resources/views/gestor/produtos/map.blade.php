@@ -7,13 +7,19 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <style>
+   <style>
+        body {
+        background: #0055e8;
+        background: linear-gradient(180deg, rgba(0, 85, 232, 1) 0%, rgba(67, 224, 133, 1) 50%, rgba(210, 255, 105, 1) 100%);
+        background-attachment: fixed;
+      }
+
         .piso-section {
+            background:rgb(255, 255, 255);
             border: 2px solid #000;
             margin-bottom: 2rem;
             padding: 1rem;
         }
-
         .piso-header {
             font-weight: bold;
             font-size: 1.25rem;
@@ -21,7 +27,6 @@
             padding-bottom: .5rem;
             margin-bottom: 1rem;
         }
-
         .location-table th, .location-table td {
             text-align: center;
             vertical-align: middle;
@@ -29,74 +34,74 @@
             min-width: 100px;
             height: 70px;
         }
-
         .location-cell.empty {
             background-color: #f5f5f5;
         }
-
         .location-cell.occupied {
             background-color: #e0ffe0;
         }
-
-        .move-btn {
+        .update-qtd-btn {
             font-size: 0.75rem;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1 class="my-4">Mapa de Localizações</h1>
+    <h1 class="my-4 text-light">Mapa de Localizações</h1>
 
-    <a href="{{ route('gestor.produtos.index') }}" class="btn btn-secondary mb-4">
+    <a href="{{ route('gestor.produtos.index') }}" class="btn btn-warning mb-4">
         <i class="fas fa-arrow-left"></i> Voltar para Produtos
     </a>
 
     @foreach($allowedPisos as $piso)
         <div class="piso-section">
-            <div class="piso-header">Piso {{ $piso }}</div>
-            <table class="table table-bordered location-table">
-                <thead>
-                    <tr>
-                        <th>Corredor / Prateleira</th>
-                        @foreach($allowedPrateleiras as $prateleira)
-                            <th>{{ $prateleira }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($allowedCorredores as $corredor)
-                        <tr>
-                            <td><strong>{{ $corredor }}</strong></td>
-                            @foreach($allowedPrateleiras as $prateleira)
-                                @php
-                                    $location = $locationsGrid[$piso][$corredor][$prateleira] ?? null;
-                                    $produto = $location->produtos->first() ?? null;
-                                @endphp
-                                <td class="location-cell {{ $produto ? 'occupied' : 'empty' }}">
-                                    @if($produto)
-                                        <div>
-                                            <span>{{ $produto->nome }}</span>
-                                            @if($produto->esgotado)
-                                            <span class="badge bg-danger">ESGOTADO</span>
-                                        @endif
-                                            <button class="btn btn-sm btn-primary move-btn mt-1"
-                                                    data-produto-id="{{ $produto->id }}"
-                                                    data-produto-nome="{{ $produto->nome }}"
-                                                    data-current-piso="{{ $piso }}"
-                                                    data-current-corredor="{{ $corredor }}"
-                                                    data-current-prateleira="{{ $prateleira }}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </div>
-                                    @else
-                                        <span class="text-muted">Vazio</span>
-                                    @endif
-                                </td>
+            <div class="piso-header ">Piso {{ $piso }}</div>
+                <div class="table-responsive"> 
+                    <table class="table table-bordered location-table">
+                        <thead>
+                            <tr>
+                                <th>Corredor / Prateleira</th>
+                                @foreach($allowedPrateleiras as $prateleira)
+                                    <th>{{ $prateleira }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($allowedCorredores as $corredor)
+                                <tr>
+                                    <td><strong>{{ $corredor }}</strong></td>
+                                    @foreach($allowedPrateleiras as $prateleira)
+                                        @php
+                                            $location = $locationsGrid[$piso][$corredor][$prateleira] ?? null;
+                                            $produto = $location->produtos->first() ?? null;
+                                        @endphp
+                                        <td class="location-cell {{ $produto ? 'occupied' : 'empty' }}">
+                                            @if($produto)
+                                                <div>
+                                                    <span>{{ $produto->nome }}</span>
+                                                    @if($produto->esgotado)
+                                                    <span class="badge bg-danger">ESGOTADO</span>
+                                                @endif
+                                                    <button class="btn btn-sm btn-primary move-btn mt-1"
+                                                            data-produto-id="{{ $produto->id }}"
+                                                            data-produto-nome="{{ $produto->nome }}"
+                                                            data-current-piso="{{ $piso }}"
+                                                            data-current-corredor="{{ $corredor }}"
+                                                            data-current-prateleira="{{ $prateleira }}">
+                                                        <i class="fas fa-edit"></i>
+                                                        Mover
+                                                    </button>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">Vazio</span>
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                </tr>
                             @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
         </div>
     @endforeach
 </div>
@@ -158,7 +163,16 @@
     </div>
 </div>
 
-<!-- Hidden JSON Template for Popout Window -->
+ <footer class="text-center text-muted">
+        <div class="bg-light">
+            <div class="container">
+                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
+                <p class="small">App Version: {{ app()->version() }}</p>
+            </div>
+            </div>    
+            
+    </footer>
+
 <script type="application/json" id="moveProdutoTemplate">
     {
         "produto_id": "",

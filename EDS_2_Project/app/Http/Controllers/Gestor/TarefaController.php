@@ -61,7 +61,7 @@ class TarefaController extends Controller
             'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
             'estado' => 'required|in:Em_Progresso, Concluida',
-            'tipo' => 'required|in:Receber,Mover,Enviar,Armazenar',
+            'tipo' => 'required|in:Receber,Mover,Enviar,Armazenar,Verificar',
             'funcionarios' => 'nullable|array',
             'funcionarios.*' => 'exists:users,id'
         ]);

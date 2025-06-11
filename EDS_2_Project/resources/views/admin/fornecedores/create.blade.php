@@ -4,20 +4,9 @@
 
 @section('content')
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="{{ route('admin.fornecedores.index') }}" class="btn btn-secondary">
-            &larr; Voltar à Lista de Fornecedores
-        </a>
-        <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
-            @csrf
-            <button type="submit" class="btn btn-danger">Sair</button>
-        </form>
-    </div>
+
 
     <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Criar Novo Fornecedor</h3>
-        </div>
         <div class="card-body">
             @if($errors->any())
                 <div class="alert alert-danger">

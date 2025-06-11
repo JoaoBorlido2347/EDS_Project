@@ -1,18 +1,18 @@
 @extends('layouts.app')
-
+@section('title', 'Gestão de Produtos')
 @section('content')
 <div class="container">
-    <h1>Gestão de Produtos</h1>
-    
+
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
-     <a href="{{ route('gestor.produtos.map') }}" class="btn btn-info">
-        <i class="fas fa-map"></i> Ver Mapa de Localizações
-    </a>
     <div class="mb-3">
+        <a href="{{ route('gestor.produtos.map') }}" class="btn btn-info">
+            <i class="fas fa-map"></i> Ver Mapa de Localizações
+        </a>
+    
         <a href="{{ route('gestor.produtos.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Adicionar Produto
         </a>
@@ -34,7 +34,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($produtos as $produto)  <!-- Changed from $tiposStock to $produtos -->
+                    @forelse($produtos as $produto)  
                     <tr>
                         <td>{{ $produto->id }}</td>
                         <td>{{ $produto->nome }}</td>

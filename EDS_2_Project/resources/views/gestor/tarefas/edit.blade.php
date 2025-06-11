@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Editar Tarefa</h1>
     
     <form action="{{ route('gestor.tarefas.update', $tarefa->id) }}" method="POST">
         @csrf
@@ -43,25 +42,28 @@
         </div>
         
         <div class="mb-3">
-            <label class="form-label">Atribuir a Funcionários</label>
-            <div class="border p-2 rounded">
-                @foreach($funcionarios as $funcionario)
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" 
-                               name="funcionarios[]" 
-                               value="{{ $funcionario->id }}"
-                               id="func{{ $funcionario->id }}"
-                               {{ in_array($funcionario->id, $assignedFuncionarios) ? 'checked' : '' }}>
-                        <label class="form-check-label" for="func{{ $funcionario->id }}">
-                            {{ $funcionario->name }}
-                        </label>
-                    </div>
-                @endforeach
-            </div>
+            <div class="card">
+                <label class="form-label">Atribuir a Funcionários</label>
+                <div class="border p-2 rounded">
+                    @foreach($funcionarios as $funcionario)
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" 
+                                name="funcionarios[]" 
+                                value="{{ $funcionario->id }}"
+                                id="func{{ $funcionario->id }}"
+                                {{ in_array($funcionario->id, $assignedFuncionarios) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="func{{ $funcionario->id }}">
+                                {{ $funcionario->name }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+             <div class="card">
         </div>
-        
-        <button type="submit" class="btn btn-primary">Atualizar Tarefa</button>
-        <a href="{{ route('gestor.tarefas.index') }}" class="btn btn-secondary">Cancelar</a>
+         <div class="mb-4">
+            <button type="submit" class="btn btn-primary">Atualizar Tarefa</button>
+            <a href="{{ route('gestor.tarefas.index') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
     </form>
 </div>
 @endsection

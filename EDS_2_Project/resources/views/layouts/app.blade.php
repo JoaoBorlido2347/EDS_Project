@@ -3,16 +3,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }} - @yield('title', 'Dashboard')</title>
+    <title>{{ config('app.name', 'Stocks') }} - @yield('title', 'Dashboard')</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         body {
-            background-color: #f8f9fa;
-            padding-top: 20px;
-            min-height: 100vh;
+        background: #0055e8;
+        background: linear-gradient(180deg, rgba(0, 85, 232, 1) 0%, rgba(67, 224, 133, 1) 50%, rgba(210, 255, 105, 1) 100%);
+        background-attachment: fixed;
         }
         .app-container {
             max-width: 1400px;
@@ -38,21 +38,31 @@
 </head>
 <body>
     <div class="container app-container">
-        <!-- Navigation Bar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm rounded mb-4">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    {{ config('app.name', 'Stocks') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#"><i class="bi bi-house-door me-1"></i> Home</a>
-                        </li>
-                        <!-- Add more menu items here -->
+                        @auth
+                            @php
+                                $homeRoute = match(Auth::user()->role) {
+                                    'administrador' => route('admin.dashboard'),
+                                    'funcionario' => route('funcionario.dashboard'),
+                                    'gestor' => route('gestor.dashboard'),
+                                    default => url('/'),
+                                };
+                            @endphp
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ $homeRoute }}">
+                                    <i class="bi bi-house-door me-1"></i> Inicio
+                                </a>
+                            </li>
+                        @endauth
                     </ul>
                     <form class="d-flex" action="{{ route('logout') }}" method="POST">
                         @csrf
@@ -64,10 +74,10 @@
             </div>
         </nav>
 
-        <!-- Page Header -->
+
         <div class="page-header">
             <div class="d-flex justify-content-between align-items-center">
-                <h1 class="h2">@yield('title', 'Dashboard')</h1>
+                <h1 class="h2 text-light">@yield('title', 'Dashboard')</h1>
                 <div>
                     @yield('header-buttons')
                 </div>
@@ -77,7 +87,7 @@
             @endif
         </div>
 
-        <!-- Alerts Section -->
+ 
         <div class="alerts-container">
             @if ($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -99,17 +109,19 @@
             @endif
         </div>
 
-        <!-- Main Content -->
+
         <main class="main-content">
             @yield('content')
         </main>
 
-        <!-- Footer -->
         <footer class="text-center text-muted">
-            <div class="container">
-                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
-                <p class="small">App Version: {{ app()->version() }}</p>
-            </div>
+            <div class="bg-light">
+                <div class="container">
+                    <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
+                    <p class="small">App Version: {{ app()->version() }}</p>
+                </div>
+             </div>    
+            
         </footer>
     </div>
 

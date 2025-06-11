@@ -8,7 +8,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <style>
+        body {
+        background: #0055e8;
+        background: linear-gradient(180deg, rgba(0, 85, 232, 1) 0%, rgba(67, 224, 133, 1) 50%, rgba(210, 255, 105, 1) 100%);
+        background-attachment: fixed;
+      }
+
         .piso-section {
+            background:rgb(255, 255, 255);
             border: 2px solid #000;
             margin-bottom: 2rem;
             padding: 1rem;
@@ -40,9 +47,9 @@
 </head>
 <body>
 <div class="container">
-    <h1 class="my-4">Mapa de Localizações</h1>
+    <h1 class="my-4 text-light">Mapa de Localizações</h1>
 
-    <a href="{{ route('funcionario.dashboard') }}" class="btn btn-secondary mb-4">
+    <a href="{{ route('funcionario.dashboard') }}" class="btn btn-warning mb-4">
         <i class="fas fa-arrow-left"></i> Voltar para Dashboard
     </a>
 
@@ -55,48 +62,51 @@
     @foreach($allowedPisos as $piso)
         <div class="piso-section">
             <div class="piso-header">Piso {{ $piso }}</div>
-            <table class="table table-bordered location-table">
-                <thead>
-                    <tr>
-                        <th>Corredor / Prateleira</th>
-                        @foreach($allowedPrateleiras as $prateleira)
-                            <th>{{ $prateleira }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($allowedCorredores as $corredor)
-                        <tr>
-                            <td><strong>{{ $corredor }}</strong></td>
-                            @foreach($allowedPrateleiras as $prateleira)
-                                @php
-                                    $location = $locationsGrid[$piso][$corredor][$prateleira] ?? null;
-                                    $produto = $location ? $location->produtos->first() : null;
-                                @endphp
-                                <td class="location-cell {{ $produto ? 'occupied' : 'empty' }}">
-                                    @if($produto)
-                                        <div>
-                                            <span>{{ $produto->nome }} (Qtd: {{ $produto->quantidade }})</span>
-                                            @if($produto->esgotado)
-                                                <span class="badge bg-danger">ESGOTADO</span>
+            <div class="table-responsive">
+                    <table class="table table-bordered location-table">
+                        <thead>        
+                            <tr>
+                                <th>Corredor / Prateleira</th>
+                                @foreach($allowedPrateleiras as $prateleira)
+                                    <th>{{ $prateleira }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($allowedCorredores as $corredor)
+                                <tr>
+                                    <td><strong>{{ $corredor }}</strong></td>
+                                    @foreach($allowedPrateleiras as $prateleira)
+                                        @php
+                                            $location = $locationsGrid[$piso][$corredor][$prateleira] ?? null;
+                                            $produto = $location ? $location->produtos->first() : null;
+                                        @endphp
+                                        <td class="location-cell {{ $produto ? 'occupied' : 'empty' }}">
+                                            @if($produto)
+                                                <div>
+                                                    <span>{{ $produto->nome }} (Qtd: {{ $produto->quantidade }})</span>
+                                                    @if($produto->esgotado)
+                                                        <span class="badge bg-danger">ESGOTADO</span>
+                                                    @endif
+                                                    <button class="btn btn-sm btn-info update-qtd-btn mt-1"
+                                                            data-produto-id="{{ $produto->id }}"
+                                                            data-produto-nome="{{ $produto->nome }}"
+                                                            data-current-qtd="{{ $produto->quantidade }}">
+                                                        <i class="fas fa-boxes"></i> Atualizar Qtd
+                                                    </button>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">Vazio</span>
                                             @endif
-                                            <button class="btn btn-sm btn-info update-qtd-btn mt-1"
-                                                    data-produto-id="{{ $produto->id }}"
-                                                    data-produto-nome="{{ $produto->nome }}"
-                                                    data-current-qtd="{{ $produto->quantidade }}">
-                                                <i class="fas fa-boxes"></i> Atualizar Qtd
-                                            </button>
-                                        </div>
-                                    @else
-                                        <span class="text-muted">Vazio</span>
-                                    @endif
-                                </td>
+                                        </td>
+                                    @endforeach
+                                </tr>
                             @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+            </div>
         </div>
+
     @endforeach
 </div>
 
@@ -136,7 +146,16 @@
         </div>
     </div>
 </div>
-
+    <footer class="text-center text-muted">
+        <div class="bg-light">
+            <div class="container">
+                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
+                <p class="small">App Version: {{ app()->version() }}</p>
+            </div>
+            </div>    
+            
+    </footer>
+    
 <script>
         // Define base URL using Laravel's route helper
     var baseUrl = "{{ route('funcionario.produtos.atualizarQuantidade', ['produto' => ':id']) }}";

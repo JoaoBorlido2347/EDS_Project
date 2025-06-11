@@ -1,8 +1,7 @@
 @extends('layouts.app')
-
+@section('title', 'Gestão de Encomendas')
 @section('content')
 <div class="container">
-    <h2>Gestão de Encomendas</h2>
     <a href="{{ route('gestor.encomendas.create') }}" class="btn btn-primary mb-3">
         <i class="bi bi-plus-circle"></i> Nova Encomenda
     </a>

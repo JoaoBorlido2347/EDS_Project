@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
+@section('title', 'Minhas Tarefas!')
+
 @section('content')
 <div class="container py-4">
-    <h1 class="mb-4">Minhas Tarefas</h1>
+
     
     @if (session('success'))
         <div class="alert alert-success">

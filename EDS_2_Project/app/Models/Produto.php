@@ -20,12 +20,14 @@ class Produto extends Model
     protected $casts = [
     'esgotado' => 'boolean'
     ];
+
     protected static function booted()
     {
         static::saving(function ($produto) {
             $produto->esgotado = $produto->quantidade <= 0;
         });
     }
+    
     public function localizacao()
     {
         return $this->belongsTo(Localizacao::class);

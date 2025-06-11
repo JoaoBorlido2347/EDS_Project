@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Criar Nova Tarefa</h1>
     
     <form action="{{ route('gestor.tarefas.store') }}" method="POST">
         @csrf
@@ -32,6 +31,7 @@
         </div>
         
         <div class="mb-3">
+    <div class="card">
     <label class="form-label">Atribuir a Funcionários</label>
     <div class="border p-2 rounded">
         @foreach($funcionarios as $funcionario)
@@ -45,6 +45,7 @@
                 </label>
             </div>
         @endforeach
+    </div>
     </div>
 </div>
         

@@ -5,7 +5,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h2>Editar Tipo de Stock: {{ $tipoStock->nome }}</h2> {{-- Changed --}}
+        <h2>{{ $tipoStock->nome }}</h2> {{-- Changed --}}
     </div>
     <div class="card-body">
         <form action="{{ route('gestor.tipos-stock.update', $tipoStock->id) }}" method="POST">

@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Gestor;
 use App\Http\Controllers\Controller;
 use App\Models\Produto;
 use App\Models\Localizacao;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Tarefa;
+use Illuminate\Support\Facades\Auth;
 
 class ProdutoController extends Controller
 {
@@ -30,21 +33,21 @@ class ProdutoController extends Controller
             'prateleira' => 'required|in:'.implode(',', Localizacao::$allowedPrateleiras),
         ]);
 
-        // Find or create location
+       
         $localizacao = Localizacao::firstOrCreate([
             'piso' => $request->piso,
             'corredor' => $request->corredor,
             'prateleira' => $request->prateleira,
         ]);
 
-        // Check if location is occupied by another product
+        
         if ($localizacao->produtos()->exists() && !$localizacao->is_empty) {
             return back()->withInput()->withErrors([
                 'localizacao' => 'Esta localização já está ocupada por outro produto!'
             ]);
         }
 
-        // Create product
+    
         $produto = Produto::create([
             'nome' => $request->nome,
             'tipo_stock_id' => $request->tipo_stock_id,
@@ -53,7 +56,24 @@ class ProdutoController extends Controller
             
         ]);
 
-        // Update location status
+        Tarefa::create([
+            'titulo' => 'Novo Produto Criado - ' . $produto->nome,
+            'descricao' => "Detalhes do Produto:\n" .
+                        "ID: " . $produto->id . "\n" .
+                        "Nome: " . $produto->nome . "\n" .
+                        "Tipo de Stock: " . $tipoStock->nome . " (ID: " . $tipoStock->id . ")\n" .
+                        "Quantidade: " . $produto->quantidade . "\n" .
+                        "Localização: Piso " . $localizacao->piso . 
+                        ", Corredor " . $localizacao->corredor . 
+                        ", Prateleira " . $localizacao->prateleira . "\n" .
+                        "Criado por: " . Auth::user()->name . "\n" .
+                        "Data de Criação: " . now()->format('Y-m-d H:i:s'),
+            'estado' => 'Em_Progresso',
+            'tipo' => 'Armazenar',
+            'gestor_id' => auth()->id()
+        ]);
+
+        
         $localizacao->update(['is_empty' => false]);
 
         return redirect()->route('gestor.produtos.index')
@@ -77,7 +97,7 @@ class ProdutoController extends Controller
         ]);
 
 
-        // Find or create new location
+   
         $newLocation = Localizacao::firstOrCreate([
             'piso' => $request->piso,
             'corredor' => $request->corredor,
@@ -87,7 +107,7 @@ class ProdutoController extends Controller
         ->where('id', '!=', $produto->id)
         ->first();
 
-        // Check if new location is occupied by another product
+    
         if ($existingProduct && !$newLocation->is_empty) {
             return back()->withInput()->withErrors([
                 'localizacao' => "Esta localização já está ocupada pelo produto ID: {$existingProduct->nome}"
@@ -95,7 +115,7 @@ class ProdutoController extends Controller
         }
 
 
-        // Free up old location if changed
+
         if ($produto->localizacao_id != $newLocation->id) {
             $oldLocation = $produto->localizacao;
             if ($oldLocation) {
@@ -103,7 +123,7 @@ class ProdutoController extends Controller
             }
         }
 
-        // Update product
+
         $produto->update([
             'nome' => $request->nome,
             'tipo_stock_id' => $request->tipo_stock_id,
@@ -111,7 +131,26 @@ class ProdutoController extends Controller
             'localizacao_id' => $newLocation->id,
         ]);
 
-        // Update new location status
+        Tarefa::create([
+            'titulo' => 'Novo Produto Criado - ' . $produto->nome,
+            'descricao' => "Detalhes do Produto:\n" .
+                        "ID: " . $produto->id . "\n" .
+                        "Nome: " . $produto->nome . "\n" .
+                        "Tipo de Stock: " . $tipoStock->nome . " (ID: " . $tipoStock->id . ")\n" .
+                        "Quantidade: " . $produto->quantidade . "\n" .
+                        "Localização: Piso " . $localizacao->piso . 
+                        ", Corredor " . $localizacao->corredor . 
+                        ", Prateleira " . $localizacao->prateleira . "\n" .
+                        "Criado por: " . Auth::user()->name . "\n" .
+                        "Data de Criação: " . now()->format('Y-m-d H:i:s'),
+            'estado' => 'Em_Progresso',
+            'tipo' => 'Armazenar',
+            'gestor_id' => auth()->id()
+        ]);
+
+
+
+     
         $newLocation->update(['is_empty' => false]);
 
         return redirect()->route('gestor.produtos.index')
@@ -120,7 +159,7 @@ class ProdutoController extends Controller
 
     public function destroy(Produto $produto)
     {
-        // Free up location before deletion
+
         if ($produto->localizacao) {
             $produto->localizacao->update(['is_empty' => true]);
         }
@@ -137,7 +176,7 @@ class ProdutoController extends Controller
         $allowedCorredores = Localizacao::$allowedCorredores;
         $allowedPrateleiras = Localizacao::$allowedPrateleiras;
         
-        // Build location grid
+
         $locationsGrid = [];
         foreach ($localizacoes as $loc) {
             $locationsGrid[$loc->piso][$loc->corredor][$loc->prateleira] = $loc;
@@ -161,14 +200,14 @@ public function move(Request $request, Produto $produto)
         'prateleira' => 'required|in:'.implode(',', Localizacao::$allowedPrateleiras),
     ]);
 
-    // Find or create new location
+
     $newLocation = Localizacao::firstOrCreate([
         'piso' => $request->piso,
         'corredor' => $request->corredor,
         'prateleira' => $request->prateleira,
     ]);
 
-    // Check if new location is occupied by another product
+
     $existingProduct = $newLocation->produtos()
         ->where('id', '!=', $produto->id)
         ->first();
@@ -178,8 +217,11 @@ public function move(Request $request, Produto $produto)
             'localizacao' => "Esta localização já está ocupada pelo produto: {$existingProduct->nome} (ID: {$existingProduct->id})"
         ]);
     }
+    $oldLocation = $produto->localizacao;
+    $oldLocationDetails = $oldLocation ? 
+        "Piso {$oldLocation->piso}, Corredor {$oldLocation->corredor}, Prateleira {$oldLocation->prateleira}" : 
+        "Sem localização anterior";
 
-    // Free up old location if changed
     if ($produto->localizacao_id != $newLocation->id) {
         $oldLocation = $produto->localizacao;
         if ($oldLocation) {
@@ -187,16 +229,28 @@ public function move(Request $request, Produto $produto)
         }
     }
 
-    // Update product location
+
     $produto->update([
         'localizacao_id' => $newLocation->id,
     ]);
+    Tarefa::create([
+        'titulo' => "Movimentação de Produto - {$produto->nome}",
+        'descricao' => "Detalhes da Movimentação:\n" .
+                      "Produto: {$produto->nome} (ID: {$produto->id})\n" .
+                      "Localização Anterior: {$oldLocationDetails}\n" .
+                      "Nova Localização: Piso {$newLocation->piso}, Corredor {$newLocation->corredor}, Prateleira {$newLocation->prateleira}\n" ,
+        'estado' => 'Em_Progresso',
+        'tipo' => 'Mover',
+        'gestor_id' => auth()->id()
+    ]);
 
-    // Update new location status
+    //
     $newLocation->update(['is_empty' => false]);
     
         return redirect()->route('gestor.produtos.map')
             ->with('success', "Produto '{$produto->nome}' movido com sucesso para Piso {$newLocation->piso}, Corredor {$newLocation->corredor}, Prateleira {$newLocation->prateleira}.");
     }
+
+ 
 
 }

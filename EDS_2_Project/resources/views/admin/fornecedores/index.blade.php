@@ -6,7 +6,6 @@
 <div class="container">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h2>Lista de Fornecedores</h2>
             <a href="{{ route('admin.fornecedores.create') }}" class="btn btn-primary">Adicionar</a>
         </div>
         <div class="card-body">

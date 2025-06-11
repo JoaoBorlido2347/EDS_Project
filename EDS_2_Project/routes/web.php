@@ -8,12 +8,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\gestor\TipoStockController;
 use App\Http\Controllers\gestor\ProdutoController;
-// Authentication routes
+
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login.show');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Protected routes
+
 Route::middleware(['auth', 'role:administrador'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
@@ -33,22 +33,22 @@ Route::middleware(['auth', 'role:funcionario'])->prefix('funcionario')->group(fu
     Route::get('/dashboard', [FuncionarioController::class, 'dashboard'])->name('funcionario.dashboard');
 });
 
-// Show the form to create a new user
+
 Route::get('/users/create', [UserController::class, 'create'])
      ->name('admin.users.create');
 
-// Handle the POST from the create form
+
 Route::post('/users', [UserController::class, 'store'])
      ->name('admin.users.store');
 
-// Show the form to edit an existing user
+
 Route::get('/users/{id}/edit', [UserController::class, 'edit'])
      ->name('admin.users.edit');
 
-// Handle the PUT/PATCH from the edit form
+
 Route::put('/users/{id}', [UserController::class, 'update'])
      ->name('admin.users.update');
-// Handle the DELETE request to delete a user
+
 Route::delete('/users/{id}', [UserController::class, 'destroy'])
      ->name('admin.users.destroy');
 

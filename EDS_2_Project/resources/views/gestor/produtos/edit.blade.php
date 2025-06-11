@@ -1,8 +1,8 @@
 @extends('layouts.app')
-
+@section('title', 'Editar Produto:')
 @section('content')
 <div class="container">
-    <h1>Editar Produto: {{ $produto->nome }}</h1>
+    <h1>{{ $produto->nome }}</h1>
     
     <form action="{{ route('gestor.produtos.update', $produto->id) }}" method="POST">
         @csrf
@@ -40,7 +40,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Status</label>
-            <div class="form-control bg-{{ $produto->esgotado ? 'danger text-white' : 'success' }}">
+            <div class="form-control bg-{{ $produto->esgotado ? 'danger text-white' : 'success text-white' }}">
                 {{ $produto->esgotado ? 'ESGOTADO' : 'DISPONÍVEL' }}
             </div>
         </div>

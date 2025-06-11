@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Gestão de Tarefas</h1>
     
     <div class="d-flex justify-content-end mb-3">
         <a href="{{ route('gestor.tarefas.create') }}" class="btn btn-primary">

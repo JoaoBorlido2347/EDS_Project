@@ -4,20 +4,10 @@
 
 @section('content')
 <div class="container">
-    {{-- NAVIGATION: Back to list + Logout --}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
-            &larr; Voltar à Lista de Utilizadores
-        </a>
-        <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
-            @csrf
-            <button type="submit" class="btn btn-danger">Sair</button>
-        </form>
-    </div>
 
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Editar Utilizador: {{ $user->name }}</h3>
+            <h3 class="mb-0">{{ $user->name }}</h3>
         </div>
         <div class="card-body">
             {{-- Show validation errors, if any --}}

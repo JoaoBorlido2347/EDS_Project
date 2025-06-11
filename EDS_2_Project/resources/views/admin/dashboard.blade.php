@@ -5,14 +5,12 @@
 @section('content')
 <div class="container py-4">
     <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">Admin Dashboard</h2>
-        </div>
+
         <div class="card-body">
             <div class="row mb-4">
                 <div class="col-md-8">
-                    <p class="lead mb-1">Welcome, <strong>{{ $user->name }}</strong>!</p>
-                    <p class="mb-0">Your role: <span class="badge bg-info">{{ $user->role }}</span></p>
+                    <p class="lead mb-1">Bem-vindo, <strong>{{ $user->name }}</strong>!</p>
+                    <p class="mb-0">És um: <span class="badge bg-info">{{ $user->role }}</span></p>
                 </div>
             </div>
 

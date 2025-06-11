@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'Gestão de Tipos de Stock')
 @section('content')
 <div class="container">
-    <h1>Gestão de Tipos de Stock</h1> {{-- Changed title --}}
     
     @if(session('success'))
         <div class="alert alert-success">
